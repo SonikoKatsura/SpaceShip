@@ -37,6 +37,9 @@ public class SpaceshipController1 : MonoBehaviour
     // Método Update que se ejecuta en cada frame del juego
 
     [SerializeField] GameObject leftWingFlap;
+    [SerializeField] GameObject rightWingFlap;
+    [SerializeField] GameObject backFlapR;
+    [SerializeField] GameObject backFlapL;
 
     private void Update()
     {
@@ -77,6 +80,12 @@ public class SpaceshipController1 : MonoBehaviour
             throttle = false;
         }
 
+        // Variables para controlar la posición del flap del ala
+        bool flapUp = false;
+        bool flapDown = false;
+        bool flapRight = false;
+        bool flapLeft = false;
+
         // Si el propulsor está activo
         if (throttle)
         {
@@ -85,38 +94,8 @@ public class SpaceshipController1 : MonoBehaviour
 
             // Elevamos/descendemos la nave si se usa el control arriba/abajo
             activePitch = moveDirection.y * pitchPower * Time.deltaTime;
-            if (moveDirection.y < 0)
-            {
-                if (leftWingFlap.transform.localEulerAngles.x > 315 || leftWingFlap.transform.localEulerAngles.x < 180)
-                    leftWingFlap.transform.Rotate(-5f, 0, 0);
-            }
-            if (moveDirection.y > 0)
-            {
-                if (leftWingFlap.transform.localEulerAngles.x < 45 || leftWingFlap.transform.localEulerAngles.x > 180)
-                    leftWingFlap.transform.Rotate(5f, 0, 0);
-            }
-        }
-        if (moveDirection.y == 0)
-        {
-            // Rotar de vuelta a la posición original
-            if (leftWingFlap.transform.localEulerAngles.x != 172.183f)
-            {
-                float rotationAmount = 0f;
-                if (leftWingFlap.transform.localEulerAngles.x > 180)
-                    rotationAmount = -5f;
-                else
-                    rotationAmount = 5f;
 
-                leftWingFlap.transform.Rotate(rotationAmount, 0, 0);
-            }
-            else
-            {
-                // Establecer la rotación exacta al valor original
-                leftWingFlap.transform.localEulerAngles = new Vector3(172.183f, leftWingFlap.transform.localEulerAngles.y, leftWingFlap.transform.localEulerAngles.z);
-            }
-        }
-
-        // Rotamos la nave si se usa el control izquierda/derecha
+              // Rotamos la nave si se usa el control izquierda/derecha
         activeRoll = moveDirection.x * rollPower * Time.deltaTime;
 
         // Aplicamos los cambios guardados en activePitch y activeRoll
@@ -130,17 +109,125 @@ public class SpaceshipController1 : MonoBehaviour
         if (leftYawInput > 0)
         {
             activeYaw = -yawPower * Time.deltaTime;
-        }
+                backFlapL.transform.localRotation = Quaternion.Euler(172, 0f, Mathf.Clamp(backFlapL.transform.localEulerAngles.z + 5f, 0f, 75f));
+                backFlapR.transform.localRotation = Quaternion.Euler(172, 0f, Mathf.Clamp(backFlapR.transform.localEulerAngles.z + 5f, 0f, 75f));
+            }
         else if (rightYawInput > 0)
         {
             activeYaw = yawPower * Time.deltaTime;
-        }
+                backFlapL.transform.localRotation = Quaternion.Euler(172, 0f, Mathf.Clamp(backFlapL.transform.localEulerAngles.z + 5f, 0f, -75f));
+                backFlapR.transform.localRotation = Quaternion.Euler(172, 0f, Mathf.Clamp(backFlapR.transform.localEulerAngles.z + 5f, 0f, -75f));
+            }
         else
         {
             activeYaw = 0f;
-        }
+                backFlapL.transform.localRotation = Quaternion.Euler(172, 0f, Mathf.Clamp(backFlapL.transform.localEulerAngles.z - 5f, 0f, 0f));
+                backFlapR.transform.localRotation = Quaternion.Euler(172, 0f, Mathf.Clamp(backFlapR.transform.localEulerAngles.z - 5f, 0f, 0f));
+            }
         // Aplicamos el cambio de Yaw
         transform.Rotate(0f, activeYaw, 0f, Space.Self);
+
+            // Control de movimiento del flap
+            if (moveDirection.y < 0)
+            {
+                flapDown = true;
+                flapUp = false;
+                flapRight = false;
+                flapLeft = false;
+            }
+            else if (moveDirection.y > 0)
+            {
+                flapUp = true;
+                flapDown = false;
+                flapRight = false;
+                flapLeft = false;
+            }
+            else if (moveDirection.x < 0)
+            {
+                flapUp = false;
+                flapDown = false;
+                flapRight = false;
+                flapLeft = true;
+            }
+
+            else if (moveDirection.x > 0)
+            {
+                flapUp = false;
+                flapDown = false;
+                flapRight = true;
+                flapLeft = false;
+            }
+            else
+            {
+                flapUp = false;
+                flapDown = false;
+                flapRight = false;
+                flapLeft = false;
+            }
+
+            // Rotación del flap izquierdo basado en su estado
+            if (flapDown && (leftWingFlap.transform.localEulerAngles.x > 315 || leftWingFlap.transform.localEulerAngles.x < 180))
+            {
+                leftWingFlap.transform.Rotate(-5f, 0, 0);
+            }
+            else if (flapUp && (leftWingFlap.transform.localEulerAngles.x < 45 || leftWingFlap.transform.localEulerAngles.x > 180))
+            {
+                leftWingFlap.transform.Rotate(5f, 0, 0);
+            }
+            else if (flapLeft && (leftWingFlap.transform.localEulerAngles.x < 45 || leftWingFlap.transform.localEulerAngles.x > 180))
+            {
+                leftWingFlap.transform.Rotate(5f, 0, 0);
+            }
+            else if (flapRight && (leftWingFlap.transform.localEulerAngles.x > 315 || leftWingFlap.transform.localEulerAngles.x < 180))
+            {
+                leftWingFlap.transform.Rotate(-5f, 0, 0);
+            }
+            else if (!flapUp && !flapDown && !flapLeft && !flapRight && leftWingFlap.transform.localEulerAngles.x != 0)
+            {
+                // Si no se está moviendo en ninguna dirección, y el flap no está en su posición original
+                // Lo rotamos hacia su posición original
+                if (leftWingFlap.transform.localEulerAngles.x > 180)
+                {
+                    leftWingFlap.transform.Rotate(-5f, 0, 0);
+                }
+                else if (leftWingFlap.transform.localEulerAngles.x < 180 && leftWingFlap.transform.localEulerAngles.x > 0)
+                {
+                    leftWingFlap.transform.Rotate(5f, 0, 0);
+                }
+            }
+            // Rotación del flap derecho basado en su estado
+            if (flapDown && (rightWingFlap.transform.localEulerAngles.x > 315 || rightWingFlap.transform.localEulerAngles.x < 180))
+            {
+                rightWingFlap.transform.Rotate(-5f, 0, 0);
+            }
+            else if (flapUp && (rightWingFlap.transform.localEulerAngles.x < 45 || rightWingFlap.transform.localEulerAngles.x > 180))
+            {
+                rightWingFlap.transform.Rotate(5f, 0, 0);
+            }            
+            else if (flapLeft && (rightWingFlap.transform.localEulerAngles.x > 315 || rightWingFlap.transform.localEulerAngles.x < 180))
+            {
+                rightWingFlap.transform.Rotate(-5f, 0, 0);
+            }
+
+            else if (flapRight && (rightWingFlap.transform.localEulerAngles.x < 45 || rightWingFlap.transform.localEulerAngles.x > 180))
+            {
+                rightWingFlap.transform.Rotate(5f, 0, 0);
+            }
+
+            else if (!flapUp && !flapDown && !flapLeft && !flapRight && rightWingFlap.transform.localEulerAngles.x != 0)
+            {
+                // Si no se está moviendo en ninguna dirección, y el flap no está en su posición original
+                // Lo rotamos hacia su posición original
+                if (rightWingFlap.transform.localEulerAngles.x > 180)
+                {
+                    rightWingFlap.transform.Rotate(-5f, 0, 0);
+                }
+                else if (rightWingFlap.transform.localEulerAngles.x < 180 && rightWingFlap.transform.localEulerAngles.x > 0)
+                {
+                    rightWingFlap.transform.Rotate(5f, 0, 0);
+                }
+            }
+        }
      
     }
 }
