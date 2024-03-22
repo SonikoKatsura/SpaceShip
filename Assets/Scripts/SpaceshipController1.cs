@@ -15,10 +15,10 @@ public class SpaceshipController1 : MonoBehaviour
     public float pitchPower, rollPower, yawPower, enginePower;
 
     // Variable privada para almacenar la aceleración actual
-    private float currentAcceleration = 0f;
+    [SerializeField] float currentAcceleration = 0f;
 
     // Variables privadas para almacenar los movimientos relativos leídos de los input
-    private float activeRoll, activePitch, activeYaw;
+    [SerializeField] float activeRoll, activePitch, activeYaw;
 
     // Referencia al InputAction de los controles (movimientos de ascenso, descenso y rotación)
     [SerializeField] InputActionReference moveAction;
@@ -41,6 +41,15 @@ public class SpaceshipController1 : MonoBehaviour
     [SerializeField] GameObject backFlapR;
     [SerializeField] GameObject backFlapL;
 
+
+
+    private void OnTriggerEnter(Collider other) // Nuevo
+    {
+        if (other.CompareTag("Ring")) // Asegúrate de que el collider sea el del anillo
+        {
+            currentAcceleration = 2f;
+        }
+    }
     private void Update()
     {
         // Obtenemos la dirección hacia la que se mueve el joystick
@@ -62,12 +71,12 @@ public class SpaceshipController1 : MonoBehaviour
         if (deccelerationInput > 0)
         {
             currentAcceleration -= deccelerationInput * Time.deltaTime; // Disminuir la aceleración linealmente
-            currentAcceleration = Mathf.Clamp01(currentAcceleration); // Asegurar que esté en el rango de 0 a 1
+            currentAcceleration = Mathf.Clamp(currentAcceleration, 0.1f, 1f); // Asegurar que esté en el rango de 0 a 1
         }
         if (accelerationInput > 0) {
             // Calculamos la aceleración actual basada en el valor del eje del gatillo derecho
             currentAcceleration += accelerationInput * Time.deltaTime;
-            currentAcceleration = Mathf.Clamp01(currentAcceleration); // Asegurar que esté en el rango de 0 a 1
+            currentAcceleration = Mathf.Clamp(currentAcceleration, 0.1f, 1f); // Asegurar que esté en el rango de 0 a 1
         }
 
         // Leemos el input que activa el propulsor
