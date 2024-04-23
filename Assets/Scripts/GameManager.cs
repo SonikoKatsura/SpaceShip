@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public List<Transform> gems;
 
-    // Update is called once per frame
-    void Update()
+    public void RemoveEnemy(Transform gem)
     {
-        
+        gems.Remove(gem);
+        // Verifica si la lista de enemigos está vacía
     }
-}
+    }

@@ -8,25 +8,25 @@ using UnityEngine.InputSystem;
 // mediante el nuevo Input System de Unity
 public class SpaceshipController1 : MonoBehaviour
 {
-    // Variable pública para controlar si el propulsor está en marcha
+    // Variable pï¿½blica para controlar si el propulsor estï¿½ en marcha
     public bool throttle = false;
 
-    // Variables públicas para controlar la fuerza de cada movimiento y del propulsor
+    // Variables pï¿½blicas para controlar la fuerza de cada movimiento y del propulsor
     public float pitchPower, rollPower, yawPower, enginePower;
 
-    // Variable privada para almacenar la aceleración actual
+    // Variable privada para almacenar la aceleraciï¿½n actual
     [SerializeField] float currentAcceleration = 0f;
 
-    // Variables privadas para almacenar los movimientos relativos leídos de los input
+    // Variables privadas para almacenar los movimientos relativos leï¿½dos de los input
     [SerializeField] float activeRoll, activePitch, activeYaw;
 
-    // Referencia al InputAction de los controles (movimientos de ascenso, descenso y rotación)
+    // Referencia al InputAction de los controles (movimientos de ascenso, descenso y rotaciï¿½n)
     [SerializeField] InputActionReference moveAction;
 
-    // Referencia al InputAction de los controles (aceleración)
+    // Referencia al InputAction de los controles (aceleraciï¿½n)
     [SerializeField] InputActionReference accelAction;
 
-    // Referencia al InputAction de los controles (deceleración)
+    // Referencia al InputAction de los controles (deceleraciï¿½n)
     [SerializeField] InputActionReference deccelAction;
 
     // Referencia al InputAction de los controles (giro izquierdo)
@@ -34,7 +34,7 @@ public class SpaceshipController1 : MonoBehaviour
 
     // Referencia al InputAction de los controles  (giro derecho)
     [SerializeField] InputActionReference rightYaw;
-    // Método Update que se ejecuta en cada frame del juego
+    // Mï¿½todo Update que se ejecuta en cada frame del juego
 
     [SerializeField] GameObject leftWingFlap;
     [SerializeField] GameObject rightWingFlap;
@@ -45,20 +45,20 @@ public class SpaceshipController1 : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) // Nuevo
     {
-        if (other.CompareTag("Ring")) // Asegúrate de que el collider sea el del anillo
+        if (other.CompareTag("Ring")) // Asegï¿½rate de que el collider sea el del anillo
         {
             currentAcceleration = 2f;
         }
     }
     private void Update()
     {
-        // Obtenemos la dirección hacia la que se mueve el joystick
+        // Obtenemos la direcciï¿½n hacia la que se mueve el joystick
         Vector2 moveDirection = moveAction.action.ReadValue<Vector2>();
 
-        // Obtenemos el valor del eje de aceleración
+        // Obtenemos el valor del eje de aceleraciï¿½n
         float accelerationInput = accelAction.action.ReadValue<float>();
-        Debug.Log(moveDirection);
-        // Obtenemos el valor del eje de deceleración
+
+        // Obtenemos el valor del eje de deceleraciï¿½n
         float deccelerationInput = deccelAction.action.ReadValue<float>();
 
         // Obtenemos el valor del boton de giro izquierdo
@@ -67,16 +67,16 @@ public class SpaceshipController1 : MonoBehaviour
         // Obtenemos el valor del boton de giro derecho
         float rightYawInput = rightYaw.action.ReadValue<float>();
 
-        // Si el gatillo izquierdo está presionado, reducimos la aceleración linealmente
+        // Si el gatillo izquierdo estï¿½ presionado, reducimos la aceleraciï¿½n linealmente
         if (deccelerationInput > 0)
         {
-            currentAcceleration -= deccelerationInput * Time.deltaTime; // Disminuir la aceleración linealmente
-            currentAcceleration = Mathf.Clamp(currentAcceleration, 0.1f, 1f); // Asegurar que esté en el rango de 0 a 1
+            currentAcceleration -= deccelerationInput * Time.deltaTime; // Disminuir la aceleraciï¿½n linealmente
+            currentAcceleration = Mathf.Clamp(currentAcceleration, 0.1f, 1f); // Asegurar que estï¿½ en el rango de 0 a 1
         }
         if (accelerationInput > 0) {
-            // Calculamos la aceleración actual basada en el valor del eje del gatillo derecho
+            // Calculamos la aceleraciï¿½n actual basada en el valor del eje del gatillo derecho
             currentAcceleration += accelerationInput * Time.deltaTime;
-            currentAcceleration = Mathf.Clamp(currentAcceleration, 0.1f, 1f); // Asegurar que esté en el rango de 0 a 1
+            currentAcceleration = Mathf.Clamp(currentAcceleration, 0.1f, 1f); // Asegurar que estï¿½ en el rango de 0 a 1
         }
 
         // Leemos el input que activa el propulsor
@@ -89,13 +89,13 @@ public class SpaceshipController1 : MonoBehaviour
             throttle = false;
         }
 
-        // Variables para controlar la posición del flap del ala
+        // Variables para controlar la posiciï¿½n del flap del ala
         bool flapUp = false;
         bool flapDown = false;
         bool flapRight = false;
         bool flapLeft = false;
 
-        // Si el propulsor está activo
+        // Si el propulsor estï¿½ activo
         if (throttle)
         {
             // Movemos la nave hacia adelante
@@ -174,7 +174,7 @@ public class SpaceshipController1 : MonoBehaviour
                 flapLeft = false;
             }
 
-            // Rotación del flap izquierdo basado en su estado
+            // Rotaciï¿½n del flap izquierdo basado en su estado
             if (flapDown && (leftWingFlap.transform.localEulerAngles.x > 315 || leftWingFlap.transform.localEulerAngles.x < 180))
             {
                 leftWingFlap.transform.Rotate(-5f, 0, 0);
@@ -193,8 +193,8 @@ public class SpaceshipController1 : MonoBehaviour
             }
             else if (!flapUp && !flapDown && !flapLeft && !flapRight && leftWingFlap.transform.localEulerAngles.x != 0)
             {
-                // Si no se está moviendo en ninguna dirección, y el flap no está en su posición original
-                // Lo rotamos hacia su posición original
+                // Si no se estï¿½ moviendo en ninguna direcciï¿½n, y el flap no estï¿½ en su posiciï¿½n original
+                // Lo rotamos hacia su posiciï¿½n original
                 if (leftWingFlap.transform.localEulerAngles.x > 180)
                 {
                     leftWingFlap.transform.Rotate(-5f, 0, 0);
@@ -204,7 +204,7 @@ public class SpaceshipController1 : MonoBehaviour
                     leftWingFlap.transform.Rotate(5f, 0, 0);
                 }
             }
-            // Rotación del flap derecho basado en su estado
+            // Rotaciï¿½n del flap derecho basado en su estado
             if (flapDown && (rightWingFlap.transform.localEulerAngles.x > 315 || rightWingFlap.transform.localEulerAngles.x < 180))
             {
                 rightWingFlap.transform.Rotate(-5f, 0, 0);
@@ -225,8 +225,8 @@ public class SpaceshipController1 : MonoBehaviour
 
             else if (!flapUp && !flapDown && !flapLeft && !flapRight && rightWingFlap.transform.localEulerAngles.x != 0)
             {
-                // Si no se está moviendo en ninguna dirección, y el flap no está en su posición original
-                // Lo rotamos hacia su posición original
+                // Si no se estï¿½ moviendo en ninguna direcciï¿½n, y el flap no estï¿½ en su posiciï¿½n original
+                // Lo rotamos hacia su posiciï¿½n original
                 if (rightWingFlap.transform.localEulerAngles.x > 180)
                 {
                     rightWingFlap.transform.Rotate(-5f, 0, 0);
